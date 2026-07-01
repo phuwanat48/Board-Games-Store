@@ -8,6 +8,7 @@ import { CategoryEntity } from './entities/category.entity';
 @Injectable()
 export class CategoryService {
   constructor(
+    //ประกาศตัวแปร categoryRepository เพื่อใช้ในการเข้าถึงฐานข้อมูลของ CategoryEntity
     @InjectRepository(CategoryEntity)
     private readonly categoryRepository: Repository<CategoryEntity>,
   ) {}
@@ -22,12 +23,17 @@ export class CategoryService {
     return await this.categoryRepository.find();
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} category`;
+  async findOne(id: number) {
+    return await this.categoryRepository.findOne({
+      where: { id }, // ค้นหาตัวที่มี id ตรงกับที่ส่งมา
+    });
   }
 
-  update(id: number,updateCategoryDto: UpdateCategoryDto) {
-    return `This action updates a #${id} category`;
+  async update(id: number, updateCategoryDto: UpdateCategoryDto) {
+    await this.categoryRepository.update(id, updateCategoryDto);
+    return await this.categoryRepository.findOne({
+      where: { id },
+    });
   }
 
   remove(id: number) {
